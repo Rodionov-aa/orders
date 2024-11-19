@@ -1,13 +1,9 @@
-FROM golang:1.23 AS build_orders
-COPY . /orders
-WORKDIR /orders
-RUN go build 
+FROM golang:latest AS builder
+RUN mkdir /app
+ADD . /app
+WORKDIR /app
+RUN CGO_ENABLED=0 GOOS=linux go build -o app main.go
 
-
-FROM alpine:3.20
-RUN addgroup -g 1000 -S orders && \
-adduser -u 1000 -h /orders -G orders -S orders
-COPY --from=build_orders --chown=orders:orders /orders/orders /orders/orders
-WORKDIR /orders
-USER orders
-CMD ["./orders"]
+FROM alpine:latest AS production
+COPY --from=builder /app .
+CMD ["./app"]
