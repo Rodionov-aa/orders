@@ -1,2 +1,2 @@
 all:
-	docker build -f Dockerfile -t orders:1.1 .
+	docker build -f Dockerfile -t orders:2.0 .
