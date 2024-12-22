@@ -1,0 +1,50 @@
+services:
+  database:
+    image: postgres:17.2
+    container_name: database
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./database-data:/var/lib/postgresql/data
+      - ./pg_hba.conf:/etc/pg_hba.conf
+    command: [ '-c', 'hba_file=/etc/pg_hba.conf' ]
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -h localhost -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    cpu_count: 2
+    networks:
+      orders-system-network:
+        ipv4_address: 10.5.0.2
+
+
+  orders:
+    image: orders:1.1
+    pull_policy: never
+    container_name: orders
+    restart: unless-stopped
+    ports:
+      - "7777:7777"
+    environment:
+      - APP_DB_USER=postgres
+      - APP_DB_PASSWORD=postgres
+      - APP_DB_HOST=database
+      - APP_DB_DISABLE_TLS=true
+      - APP_ENV=dev
+    networks:
+      orders-system-network:
+        ipv4_address: 10.5.0.15
+
+volumes:
+  database: {}
+
+networks:
+  orders-system-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/24
