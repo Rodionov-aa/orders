@@ -7,7 +7,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - ./database-data:/var/lib/postgresql/data
+      - /home/alex/tmp/pg/database-data:/var/lib/postgresql/data
       - ./pg_hba.conf:/etc/pg_hba.conf
     command: [ '-c', 'hba_file=/etc/pg_hba.conf' ]
     healthcheck:
@@ -23,7 +23,7 @@ services:
 
 
   orders:
-    image: orders:1.1
+    image: orders:2.0
     pull_policy: never
     container_name: orders
     restart: unless-stopped

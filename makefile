@@ -1,11 +1,11 @@
 all:
 	docker build -f Dockerfile -t orders:2.0 .
 
-compose-up:
+up:
 	cd ./infra/compose/ && docker compose -f docker_compose.yaml -p compose up -d
 
-compose-down:
+down:
 	cd ./infra/compose/ && docker compose -f docker_compose.yaml down
 
-compose-logs:
+logs:
 	cd ./infra/compose/ && docker compose -f docker_compose.yaml logs
